@@ -1,0 +1,5 @@
+1. Hero: https://horizonx.so/tools/glass-ball,
+https://21st.dev/@ravikatiyar162/components/minimalist-hero
+https://21st.dev/@designali-in/components/hero-04
+2. Работы: https://21st.dev/@aayush-duhan/components/card-fan-carousel
+3. Header: https://21st.dev/@efferd/components/header-2
