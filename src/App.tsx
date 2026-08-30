@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Code2, Menu, Search, Send, X } from "lucide-react";
 
 const navigation = [
@@ -12,6 +12,54 @@ const services = [
   { label: "SEO", Icon: Search },
   { label: "Запуск", Icon: Send },
 ] as const;
+
+function CursorGlow() {
+  const glowRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const glow = glowRef.current;
+    const hasFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!glow || !hasFinePointer || prefersReducedMotion) {
+      return;
+    }
+
+    let animationFrame = 0;
+    let pointerX = window.innerWidth / 2;
+    let pointerY = window.innerHeight / 2;
+
+    const renderGlow = () => {
+      glow.style.transform = `translate3d(${pointerX}px, ${pointerY}px, 0) translate3d(-50%, -50%, 0)`;
+      animationFrame = 0;
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      glow.classList.add("cursor-glow--visible");
+
+      if (!animationFrame) {
+        animationFrame = window.requestAnimationFrame(renderGlow);
+      }
+    };
+
+    const hideGlow = () => glow.classList.remove("cursor-glow--visible");
+
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    window.addEventListener("blur", hideGlow);
+    document.documentElement.addEventListener("mouseleave", hideGlow);
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("blur", hideGlow);
+      document.documentElement.removeEventListener("mouseleave", hideGlow);
+      window.cancelAnimationFrame(animationFrame);
+    };
+  }, []);
+
+  return <div ref={glowRef} className="cursor-glow" aria-hidden="true" />;
+}
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -38,6 +86,8 @@ function App() {
 
   return (
     <div className="site-shell">
+      <CursorGlow />
+
       <a className="skip-link" href="#main-content">
         Перейти к содержанию
       </a>
