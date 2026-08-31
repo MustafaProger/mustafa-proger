@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Code2, Menu, Search, Send, X } from "lucide-react";
+import { ProjectsSection } from "./components/ProjectsSection";
 
 const navigation = [
   { label: "Работы", href: "#works" },
@@ -219,10 +220,7 @@ function App() {
           </a>
         </div>
 
-        <a className="works-preview" id="works" href="#project-start" aria-labelledby="works-heading">
-          <h2 id="works-heading">Работы</h2>
-          <ArrowUpRight aria-hidden="true" />
-        </a>
+        <ProjectsSection />
       </main>
     </div>
   );
