@@ -42,9 +42,30 @@ export const featuredProjects: readonly FeaturedProject[] = [
     linkLabel: "Смотреть код",
     tone: "fuellead",
     slides: [
-      { label: "Обзор", visualCode: "FL" },
-      { label: "Компании", visualCode: "DB" },
-      { label: "Шаблон письма", visualCode: "@" },
+      {
+        label: "Обзор",
+        visualCode: "FL",
+        src: "/projects/fuellead/overview.png",
+        alt: "Обзор воронки компаний и статистики рассылок в FuelLead",
+      },
+      {
+        label: "Рассылка",
+        visualCode: "SEND",
+        src: "/projects/fuellead/outreach.png",
+        alt: "Прогресс автоматической очереди отправки писем в FuelLead",
+      },
+      {
+        label: "Компании",
+        visualCode: "DB",
+        src: "/projects/fuellead/companies.png",
+        alt: "Таблица найденных компаний с контактами и статусами в FuelLead",
+      },
+      {
+        label: "Шаблон письма",
+        visualCode: "@",
+        src: "/projects/fuellead/email-template.png",
+        alt: "Редактор шаблона персонального письма в FuelLead",
+      },
     ],
   },
   {

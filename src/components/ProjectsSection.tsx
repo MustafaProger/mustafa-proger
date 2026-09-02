@@ -17,8 +17,15 @@ function ProjectVisual({
     startX: 0,
     startScrollLeft: 0,
   });
+  const activeSlideRef = useRef(0);
+  const programmaticTargetRef = useRef<number | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
   const hasMedia = project.slides.some((slide) => Boolean(slide.src));
+
+  const selectSlide = (index: number) => {
+    activeSlideRef.current = index;
+    setActiveSlide(index);
+  };
 
   const showSlide = (index: number) => {
     const track = trackRef.current;
@@ -28,11 +35,12 @@ function ProjectVisual({
     }
 
     const normalizedIndex = (index + project.slides.length) % project.slides.length;
+    programmaticTargetRef.current = normalizedIndex;
+    selectSlide(normalizedIndex);
     track.scrollTo({
       left: normalizedIndex * track.clientWidth,
       behavior: "smooth",
     });
-    setActiveSlide(normalizedIndex);
   };
 
   const updateActiveSlide = () => {
@@ -42,8 +50,21 @@ function ProjectVisual({
       return;
     }
 
+    const programmaticTarget = programmaticTargetRef.current;
+
+    if (programmaticTarget !== null) {
+      const targetScrollLeft = programmaticTarget * track.clientWidth;
+      const reachedTarget = Math.abs(track.scrollLeft - targetScrollLeft) <= 2;
+
+      if (reachedTarget) {
+        programmaticTargetRef.current = null;
+      }
+
+      return;
+    }
+
     const nextIndex = Math.round(track.scrollLeft / track.clientWidth);
-    setActiveSlide(Math.min(project.slides.length - 1, Math.max(0, nextIndex)));
+    selectSlide(Math.min(project.slides.length - 1, Math.max(0, nextIndex)));
   };
 
   const finishDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -82,6 +103,7 @@ function ProjectVisual({
             return;
           }
 
+          programmaticTargetRef.current = null;
           dragStateRef.current = {
             isDragging: true,
             startX: event.clientX,
@@ -89,6 +111,9 @@ function ProjectVisual({
           };
           event.currentTarget.dataset.dragging = "true";
           event.currentTarget.setPointerCapture(event.pointerId);
+        }}
+        onWheel={() => {
+          programmaticTargetRef.current = null;
         }}
         onPointerMove={(event) => {
           if (!dragStateRef.current.isDragging) {
@@ -103,12 +128,12 @@ function ProjectVisual({
         onKeyDown={(event) => {
           if (event.key === "ArrowLeft") {
             event.preventDefault();
-            showSlide(activeSlide - 1);
+            showSlide(activeSlideRef.current - 1);
           }
 
           if (event.key === "ArrowRight") {
             event.preventDefault();
-            showSlide(activeSlide + 1);
+            showSlide(activeSlideRef.current + 1);
           }
         }}
       >
@@ -150,7 +175,7 @@ function ProjectVisual({
         <button
           type="button"
           aria-label={`Предыдущее изображение проекта ${project.title}`}
-          onClick={() => showSlide(activeSlide - 1)}
+          onClick={() => showSlide(activeSlideRef.current - 1)}
         >
           <ArrowLeft aria-hidden="true" />
         </button>
@@ -160,7 +185,7 @@ function ProjectVisual({
         <button
           type="button"
           aria-label={`Следующее изображение проекта ${project.title}`}
-          onClick={() => showSlide(activeSlide + 1)}
+          onClick={() => showSlide(activeSlideRef.current + 1)}
         >
           <ArrowRight aria-hidden="true" />
         </button>
