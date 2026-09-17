@@ -785,7 +785,39 @@ main {
 }
 
 .project-visual--media .project-carousel__slide {
-  background: #111313;
+  background: var(--project-image-background, #111313);
+}
+
+.project-visual--finance {
+  --project-image-background: #080f1f;
+}
+
+.project-visual--leppa,
+.project-visual--olympion {
+  --project-image-background: #fff;
+}
+
+.project-carousel__caption {
+  display: none;
+  grid-template-columns: minmax(0, 1fr);
+  overflow-wrap: anywhere;
+}
+
+.project-carousel__caption > span {
+  grid-area: 1 / 1;
+  visibility: hidden;
+}
+
+.project-carousel__caption > span[data-active="true"] {
+  visibility: visible;
+}
+
+.project-carousel__note {
+  grid-column: 1 / -1;
+  margin: 0 0.5rem 0.25rem;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.4;
 }
 
 .project-visual::before,
@@ -973,6 +1005,50 @@ main {
   width: 47%;
 }
 
+.project-visual.project-visual--media {
+  display: grid;
+  min-height: 0;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-self: center;
+  gap: 0.7rem 0.85rem;
+  overflow: visible;
+  background: transparent;
+}
+
+.project-visual.project-visual--media::before,
+.project-visual.project-visual--media::after {
+  display: none;
+}
+
+.project-visual.project-visual--media .project-carousel__track {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  grid-column: 1 / -1;
+  aspect-ratio: var(--project-image-ratio, 1.58);
+}
+
+.project-visual.project-visual--media .project-carousel__slide > img {
+  object-fit: contain;
+}
+
+.project-visual.project-visual--media .project-carousel__caption {
+  display: grid;
+  align-self: center;
+  margin: 0 0 0 0.5rem;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 610;
+  line-height: 1.4;
+}
+
+.project-visual.project-visual--media .project-carousel__controls {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  justify-self: end;
+}
+
 .additional-projects {
   display: grid;
   grid-template-columns: minmax(18rem, 0.72fr) minmax(0, 1.28fr);
@@ -1012,10 +1088,18 @@ main {
 .additional-projects__link {
   display: grid;
   min-height: 5.6rem;
-  grid-template-columns: 3rem minmax(9rem, 0.55fr) minmax(14rem, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 1rem;
   transition: padding 180ms ease, background-color 180ms ease;
+}
+
+.additional-projects__details {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 3rem minmax(9rem, 0.55fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
 }
 
 .additional-projects__link:hover {
@@ -1218,8 +1302,46 @@ main {
   }
 
   .project-visual--media {
+    display: grid;
     min-height: 0;
-    aspect-ratio: 1.58;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.7rem 0.85rem;
+    overflow: visible;
+    background: transparent;
+  }
+
+  .project-visual--media::before,
+  .project-visual--media::after {
+    display: none;
+  }
+
+  .project-visual--media .project-carousel__track {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    grid-column: 1 / -1;
+    aspect-ratio: var(--project-image-ratio, 1.58);
+  }
+
+  .project-visual--media .project-carousel__slide > img {
+    object-fit: contain;
+  }
+
+  .project-visual--media .project-carousel__caption {
+    display: grid;
+    align-self: center;
+    margin: 0 0 0 0.5rem;
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-weight: 610;
+    line-height: 1.4;
+  }
+
+  .project-visual--media .project-carousel__controls {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    justify-self: end;
   }
 
   .additional-projects {
@@ -1431,7 +1553,6 @@ main {
 
   .project-visual--media {
     min-height: 0;
-    aspect-ratio: 1.58;
   }
 
   .project-visual__frame {
@@ -1453,32 +1574,32 @@ main {
 
   .additional-projects {
     margin-top: 0.75rem;
-    padding: 2rem 1.4rem 1.2rem;
+    padding: 1.6rem 1.5rem 1.2rem;
     border-radius: 1.7rem;
   }
 
   .additional-projects__link {
-    min-height: 6.7rem;
-    grid-template-columns: 1fr auto;
-    gap: 0.45rem 1rem;
+    min-height: 0;
+    gap: 1rem;
+    padding: 1.15rem 0.15rem;
   }
 
-  .additional-projects__year {
-    order: 2;
-    text-align: right;
+  .additional-projects__link:hover {
+    padding-inline: 0.15rem;
+  }
+
+  .additional-projects__details {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.4rem;
   }
 
   .additional-projects strong {
     font-size: 1rem;
+    line-height: 1.35;
   }
 
   .additional-projects__description {
-    grid-column: 1 / -1;
-  }
-
-  .additional-projects__link > svg {
-    grid-column: 2;
-    grid-row: 1;
+    max-width: 28rem;
   }
 }
 

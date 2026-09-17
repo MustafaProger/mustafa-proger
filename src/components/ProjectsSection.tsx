@@ -1,4 +1,10 @@
-import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import {
   additionalProjects,
@@ -9,7 +15,7 @@ import {
 function ProjectVisual({
   project,
 }: {
-  project: Pick<FeaturedProject, "number" | "title" | "tone" | "slides">;
+  project: Pick<FeaturedProject, "number" | "title" | "tone" | "slides" | "mediaNote" | "mediaAspectRatio">;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const dragStateRef = useRef({
@@ -21,6 +27,41 @@ function ProjectVisual({
   const programmaticTargetRef = useRef<number | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
   const hasMedia = project.slides.some((slide) => Boolean(slide.src));
+  const imageRatios = project.slides.flatMap((slide) =>
+    slide.src && slide.width && slide.height ? [slide.width / slide.height] : [],
+  );
+  // Reserve one frame before loading images; changing slides must not resize it.
+  const frameRatio = project.mediaAspectRatio ??
+    (imageRatios.length > 0 ? Math.min(...imageRatios) : 1.58);
+
+  useEffect(() => {
+    const track = trackRef.current;
+
+    if (!track) {
+      return;
+    }
+
+    let previousWidth = 0;
+    const observer = new ResizeObserver(() => {
+      const width = track.clientWidth;
+
+      if (width === 0 || width === previousWidth) {
+        return;
+      }
+
+      previousWidth = width;
+      const index = Math.min(activeSlideRef.current, project.slides.length - 1);
+      activeSlideRef.current = index;
+      setActiveSlide(index);
+      programmaticTargetRef.current = null;
+      dragStateRef.current.isDragging = false;
+      delete track.dataset.dragging;
+      track.scrollTo({ left: index * width, behavior: "instant" });
+    });
+
+    observer.observe(track);
+    return () => observer.disconnect();
+  }, [project.slides.length]);
 
   const selectSlide = (index: number) => {
     activeSlideRef.current = index;
@@ -39,7 +80,9 @@ function ProjectVisual({
     selectSlide(normalizedIndex);
     track.scrollTo({
       left: normalizedIndex * track.clientWidth,
-      behavior: "smooth",
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "instant"
+        : "smooth",
     });
   };
 
@@ -89,6 +132,7 @@ function ProjectVisual({
   return (
     <div
       className={`project-visual project-visual--${project.tone}${hasMedia ? " project-visual--media" : ""}`}
+      style={{ "--project-image-ratio": frameRatio } as CSSProperties}
       role="region"
       aria-roledescription="карусель"
       aria-label={`Изображения проекта ${project.title}`}
@@ -144,11 +188,14 @@ function ProjectVisual({
             role="group"
             aria-roledescription="слайд"
             aria-label={`${index + 1} из ${project.slides.length}: ${slide.label}`}
+            aria-hidden={index !== activeSlide}
           >
             {slide.src ? (
               <img
                 src={slide.src}
                 alt={slide.alt ?? `${project.title} — ${slide.label}`}
+                width={slide.width}
+                height={slide.height}
                 loading="lazy"
                 decoding="async"
                 draggable={false}
@@ -171,6 +218,13 @@ function ProjectVisual({
         ))}
       </div>
 
+      <p className="project-carousel__caption" aria-hidden="true">
+        {project.slides.map((slide, index) => (
+          <span key={slide.label} data-active={index === activeSlide}>
+            {slide.label}
+          </span>
+        ))}
+      </p>
       <div className="project-carousel__controls">
         <button
           type="button"
@@ -190,6 +244,7 @@ function ProjectVisual({
           <ArrowRight aria-hidden="true" />
         </button>
       </div>
+      {project.mediaNote && <p className="project-carousel__note">{project.mediaNote}</p>}
     </div>
   );
 }
@@ -288,9 +343,11 @@ export function ProjectsSection() {
                 target="_blank"
                 rel="noreferrer"
               >
-                <span className="additional-projects__year">{project.year}</span>
-                <strong>{project.title}</strong>
-                <span className="additional-projects__description">{project.description}</span>
+                <span className="additional-projects__details">
+                  <span className="additional-projects__year">{project.year}</span>
+                  <strong>{project.title}</strong>
+                  <span className="additional-projects__description">{project.description}</span>
+                </span>
                 <ArrowUpRight aria-hidden="true" />
               </a>
             </li>
