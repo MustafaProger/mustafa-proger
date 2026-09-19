@@ -6,16 +6,21 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { Link } from "react-router-dom";
 import {
   additionalProjects,
   featuredProjects,
   type FeaturedProject,
 } from "../data/projects";
 
-function ProjectVisual({
+export function ProjectVisual({
   project,
 }: {
-  project: Pick<FeaturedProject, "number" | "title" | "tone" | "slides" | "mediaNote" | "mediaAspectRatio">;
+  project: Pick<
+    FeaturedProject,
+    "number" | "title" | "tone" | "slides" | "mediaNote" | "mediaAspectRatio"
+  >;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const dragStateRef = useRef({
@@ -28,10 +33,13 @@ function ProjectVisual({
   const [activeSlide, setActiveSlide] = useState(0);
   const hasMedia = project.slides.some((slide) => Boolean(slide.src));
   const imageRatios = project.slides.flatMap((slide) =>
-    slide.src && slide.width && slide.height ? [slide.width / slide.height] : [],
+    slide.src && slide.width && slide.height
+      ? [slide.width / slide.height]
+      : [],
   );
   // Reserve one frame before loading images; changing slides must not resize it.
-  const frameRatio = project.mediaAspectRatio ??
+  const frameRatio =
+    project.mediaAspectRatio ??
     (imageRatios.length > 0 ? Math.min(...imageRatios) : 1.58);
 
   useEffect(() => {
@@ -75,7 +83,8 @@ function ProjectVisual({
       return;
     }
 
-    const normalizedIndex = (index + project.slides.length) % project.slides.length;
+    const normalizedIndex =
+      (index + project.slides.length) % project.slides.length;
     programmaticTargetRef.current = normalizedIndex;
     selectSlide(normalizedIndex);
     track.scrollTo({
@@ -165,7 +174,8 @@ function ProjectVisual({
           }
 
           const distance = event.clientX - dragStateRef.current.startX;
-          event.currentTarget.scrollLeft = dragStateRef.current.startScrollLeft - distance;
+          event.currentTarget.scrollLeft =
+            dragStateRef.current.startScrollLeft - distance;
         }}
         onPointerUp={finishDrag}
         onPointerCancel={finishDrag}
@@ -234,7 +244,8 @@ function ProjectVisual({
           <ArrowLeft aria-hidden="true" />
         </button>
         <span aria-live="polite">
-          {String(activeSlide + 1).padStart(2, "0")} / {String(project.slides.length).padStart(2, "0")}
+          {String(activeSlide + 1).padStart(2, "0")} /{" "}
+          {String(project.slides.length).padStart(2, "0")}
         </span>
         <button
           type="button"
@@ -244,14 +255,27 @@ function ProjectVisual({
           <ArrowRight aria-hidden="true" />
         </button>
       </div>
-      {project.mediaNote && <p className="project-carousel__note">{project.mediaNote}</p>}
+      {project.mediaNote && (
+        <p className="project-carousel__note">{project.mediaNote}</p>
+      )}
     </div>
   );
 }
 
 function ProjectCard({ project }: { project: FeaturedProject }) {
+  const reduceMotion = useReducedMotion();
+
   return (
-    <article className="project-card">
+    <motion.article
+      className="project-card"
+      initial={false}
+      whileInView={{ y: reduceMotion ? 0 : [28, 0] }}
+      viewport={{ once: true, amount: 0.12 }}
+      transition={{
+        duration: reduceMotion ? 0 : 0.55,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
       <div className="project-card__content">
         <div className="project-card__meta">
           <span>{project.number}</span>
@@ -267,57 +291,79 @@ function ProjectCard({ project }: { project: FeaturedProject }) {
           <p>{project.result}</p>
         </div>
 
-        <ul className="project-card__stack" aria-label={`Технологии проекта ${project.title}`}>
+        <ul
+          className="project-card__stack"
+          aria-label={`Технологии проекта ${project.title}`}
+        >
           {project.technologies.map((technology) => (
             <li key={technology}>{technology}</li>
           ))}
         </ul>
 
-        {project.href ? (
-          <a
-            className="project-card__link"
-            href={project.href}
-            target="_blank"
-            rel="noreferrer"
+        <div className="project-card__actions">
+          <Link
+            className="project-card__link project-card__link--case"
+            to={`/projects/${project.slug}/`}
           >
-            <span>{project.linkLabel}</span>
-            <ArrowUpRight aria-hidden="true" />
-          </a>
-        ) : (
-          <p className="project-card__availability">
-            {project.availabilityLabel ?? "Сайт клиента сейчас не опубликован"}
-          </p>
-        )}
+            <span>Разобрать кейс</span>
+            <ArrowRight aria-hidden="true" />
+          </Link>
+          {project.href ? (
+            <a
+              className="project-card__link"
+              href={project.href}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span>{project.linkLabel}</span>
+              <ArrowUpRight aria-hidden="true" />
+            </a>
+          ) : (
+            <p className="project-card__availability">
+              {project.availabilityLabel ?? "Скриншоты проекта — внутри кейса"}
+            </p>
+          )}
+        </div>
       </div>
 
       <ProjectVisual project={project} />
-    </article>
+    </motion.article>
   );
 }
 
 export function ProjectsSection() {
   return (
-    <section className="works-section" id="works" aria-labelledby="works-heading">
+    <section
+      className="works-section"
+      id="works"
+      aria-labelledby="works-heading"
+    >
       <header className="works-section__header">
         <div className="works-section__intro">
           <h2 id="works-heading">Работы</h2>
           <p>
-            От первого коммерческого заказа до собственных продуктов и сервисов для бизнеса.
+            От первого коммерческого заказа до собственных продуктов и сервисов
+            для бизнеса.
           </p>
         </div>
 
-        <dl className="works-proof" aria-label="Опыт в цифрах">
+        <dl className="works-proof" aria-label="Проекты в портфолио">
           <div>
-            <dt>3+</dt>
-            <dd>года в разработке</dd>
+            <dt>{featuredProjects.length}</dt>
+            <dd>подробных кейсов</dd>
           </div>
           <div>
-            <dt>7</dt>
-            <dd>завершённых заказов</dd>
+            <dt>
+              {featuredProjects.reduce(
+                (count, project) => count + project.slides.length,
+                0,
+              )}
+            </dt>
+            <dd>экранов проектов</dd>
           </div>
           <div>
-            <dt>20+</dt>
-            <dd>проектов общей сложности</dd>
+            <dt>{additionalProjects.length}</dt>
+            <dd>другие работы</dd>
           </div>
         </dl>
       </header>
@@ -331,7 +377,10 @@ export function ProjectsSection() {
       <div className="additional-projects">
         <div className="additional-projects__heading">
           <h3>Другие коммерческие работы</h3>
-          <p>Более компактные сайты и каталоги, разработанные под задачи малого бизнеса.</p>
+          <p>
+            Более компактные сайты и каталоги, разработанные под задачи малого
+            бизнеса.
+          </p>
         </div>
 
         <ul>
@@ -344,9 +393,13 @@ export function ProjectsSection() {
                 rel="noreferrer"
               >
                 <span className="additional-projects__details">
-                  <span className="additional-projects__year">{project.year}</span>
+                  <span className="additional-projects__year">
+                    {project.year}
+                  </span>
                   <strong>{project.title}</strong>
-                  <span className="additional-projects__description">{project.description}</span>
+                  <span className="additional-projects__description">
+                    {project.description}
+                  </span>
                 </span>
                 <ArrowUpRight aria-hidden="true" />
               </a>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="background" x2="1" y2="1">
+      <stop stop-color="#edf1f5"/>
+      <stop offset="1" stop-color="#dee7e9"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#background)"/>
+  <circle cx="1100" cy="80" r="290" fill="#c5ff08" opacity=".3"/>
+  <rect x="48" y="48" width="1104" height="534" rx="32" fill="#fff" opacity=".65"/>
+  <g font-family="Helvetica, Arial, sans-serif" fill="#121313">
+    <text x="88" y="119" font-size="29" font-weight="700" letter-spacing="-1">MUSTAFA<tspan fill="#77a000">.</tspan></text>
+    <text x="88" y="248" font-size="67" font-weight="700" letter-spacing="-2">Сайты и приложения,</text>
+    <text x="88" y="329" font-size="67" font-weight="700" letter-spacing="-2">которые работают.</text>
+    <text x="90" y="393" font-size="26" fill="#566168">Разработка · интерфейсы · запуск</text>
+    <rect x="88" y="466" width="282" height="62" rx="31" fill="#c5ff08"/>
+    <text x="120" y="505" font-size="23" font-weight="700">Обсудим проект ↗</text>
+    <text x="720" y="509" font-size="23" fill="#566168">mustafa-proger.vercel.app</text>
+  </g>
+</svg>

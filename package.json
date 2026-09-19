@@ -5,16 +5,19 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview",
-    "typecheck": "tsc -b --pretty"
+    "build": "tsc -b && vite build && node scripts/prerender.mjs",
+    "preview": "node scripts/preview.mjs",
+    "typecheck": "tsc -b --pretty",
+    "check:site": "node scripts/check-site.mjs"
   },
   "dependencies": {
     "@fontsource-variable/manrope": "^5.3.0",
     "@fontsource-variable/roboto-condensed": "^5.3.0",
+    "framer-motion": "^13.4.0",
     "lucide-react": "^1.37.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
     "@types/react": "^19.2.18",

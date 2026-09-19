@@ -15,6 +15,7 @@ export type ProjectSlide = {
 };
 
 export type FeaturedProject = {
+  slug: string;
   number: string;
   title: string;
   kind: string;
@@ -33,6 +34,7 @@ export type FeaturedProject = {
 
 export const featuredProjects: readonly FeaturedProject[] = [
   {
+    slug: "fuellead",
     number: "01",
     title: "FuelLead",
     kind: "Внутренняя система · B2B",
@@ -98,6 +100,7 @@ export const featuredProjects: readonly FeaturedProject[] = [
     ],
   },
   {
+    slug: "chef-choice",
     number: "02",
     title: "Chef’s Choice",
     kind: "E-commerce · ресторан",
@@ -105,7 +108,7 @@ export const featuredProjects: readonly FeaturedProject[] = [
     summary:
       "Перезапустил неудобный сайт ресторана как полноценный сервис заказа: адаптивное меню, корзина, оформление, доставка и самовывоз.",
     result:
-      "Интегрировал Strapi, YooKassa и email-уведомления. По данным клиента, менее чем за неделю продвижения сайт принёс 65 000+ ₽ выручки.",
+      "Меню под управлением Strapi, онлайн-оплата через YooKassa и email-уведомления о заказах. Посетитель может выбрать блюда и оформить доставку или самовывоз на сайте.",
     technologies: ["Next.js", "Strapi", "YooKassa", "SEO"],
     href: "https://chefschoice-turk.ru/",
     linkLabel: "Открыть проект",
@@ -154,6 +157,7 @@ export const featuredProjects: readonly FeaturedProject[] = [
     ],
   },
   {
+    slug: "finance",
     number: "03",
     title: "Finance",
     kind: "Собственный продукт · финтех",
@@ -210,6 +214,7 @@ export const featuredProjects: readonly FeaturedProject[] = [
     ],
   },
   {
+    slug: "leppa-wenston",
     number: "04",
     title: "Leppa-Wenston",
     kind: "Каталог · сантехника",
@@ -266,6 +271,7 @@ export const featuredProjects: readonly FeaturedProject[] = [
     ],
   },
   {
+    slug: "olympion",
     number: "05",
     title: "Olympion Тропарёво",
     kind: "Первый заказ · спортивный клуб",
