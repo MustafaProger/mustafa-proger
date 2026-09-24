@@ -28,7 +28,7 @@ export function Seo({
         name: site.author,
         url: `${site.url}/`,
         jobTitle: "Веб-разработчик",
-        image: absoluteUrl("/mustafa-portrait.jpg"),
+        image: absoluteUrl("/mustafa-portrait-2026-09.jpg"),
         sameAs: [site.telegram, site.github],
       },
       {

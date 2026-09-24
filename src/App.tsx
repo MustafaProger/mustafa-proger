@@ -326,10 +326,10 @@ function HomePage() {
             }}
           >
             <img
-              src="/mustafa-portrait.jpg"
+              src="/mustafa-portrait-2026-09.jpg"
               alt="Мустафа, разработчик сайтов"
-              width="1056"
-              height="1030"
+              width="640"
+              height="640"
               fetchPriority="high"
             />
             <figcaption className="portrait-caption">
